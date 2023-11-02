@@ -1,0 +1,52 @@
+#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+#include &lt;string.h&gt;
+
+#define MAX 100
+
+char stack[MAX];
+char postfix[MAX];
+int top = -1;
+
+int evaluatePostfix() {
+int i, operand1, operand2, result;
+
+for (i = 0; postfix[i] != &#39;\0&#39;; i++) {
+if (postfix[i] &gt;= &#39;0&#39; &amp;&amp; postfix[i] &lt;= &#39;9&#39;) {
+
+stack[++top] = postfix[i] - &#39;0&#39;;
+} else {
+operand2 = stack[top--];
+operand1 = stack[top--];
+
+switch (postfix[i]) {
+case &#39;+&#39;:
+result = operand1 + operand2;
+break;
+case &#39;-&#39;:
+result = operand1 - operand2;
+break;
+case &#39;*&#39;:
+result = operand1 * operand2;
+break;
+case &#39;/&#39;:
+result = operand1 / operand2;
+break;
+}
+
+stack[++top] = result;
+}
+}
+
+return stack[top];
+}
+
+int main() {
+printf(&quot;Enter the postfix expression: &quot;);
+gets(postfix);
+
+result = evaluatePostfix();
+printf(&quot;The result is: %d\n&quot;, result);
+
+return 0;
+}
