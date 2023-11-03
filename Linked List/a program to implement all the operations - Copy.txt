@@ -1,0 +1,92 @@
+Q)
+Write a program to implement all the operations of
+priority queue as discussed in the class. You have to use
+linked list for implementation, and each node have three
+fields to maintain the data, priority, and link to the next
+node.
+
+
+A)
+#include <stdio.h>
+#include <stdlib.h>
+struct Node {
+int data;
+int priority;
+struct Node* next;
+};
+struct PriorityQueue {
+struct Node* front;
+};
+struct Node* createNode(int data, int priority) {
+struct Node* newNode = (struct Node*)malloc(sizeof(struct Node));
+newNode->data = data;
+newNode->priority = priority;
+newNode->next = NULL;
+return newNode;
+}
+struct PriorityQueue* createPriorityQueue() {
+struct PriorityQueue* pq = (struct PriorityQueue*)malloc(sizeof(struct PriorityQueue));
+pq->front = NULL;
+return pq;
+}
+int isEmpty(struct PriorityQueue* pq) {
+return (pq->front == NULL);
+}
+
+void enqueue(struct PriorityQueue* pq, int data, int priority) {
+struct Node* newNode = createNode(data, priority);
+if (isEmpty(pq) || priority < pq->front->priority) {
+newNode->next = pq->front;
+pq->front = newNode;
+} else {
+struct Node* current = pq->front;
+while (current->next != NULL && current->next->priority <= priority) {
+current = current->next;
+}
+newNode->next = current->next;
+current->next = newNode;
+}
+}
+int dequeue(struct PriorityQueue* pq) {
+if (isEmpty(pq)) {
+printf("Priority Queue is empty.\n");
+return -1; // Error value for an empty queue
+}
+int data = pq->front->data;
+struct Node* temp = pq->front;
+pq->front = pq->front->next;
+free(temp);
+return data;
+}
+void display(struct PriorityQueue* pq) {
+if (isEmpty(pq)) {
+printf("Priority Queue is empty.\n");
+return;
+}
+struct Node* current = pq->front;
+while (current != NULL) {
+printf("Data: %d, Priority: %d\n", current->data, current->priority);
+current = current->next;
+}
+}
+int main() {
+
+struct PriorityQueue* pq = createPriorityQueue();
+printf(" Priority Queue Program\n");
+printf("Enter the number of tasks: ");
+int numTasks;
+scanf("%d", &numTasks);
+for (int i = 0; i < numTasks; i++) {
+int data, priority;
+printf("Enter data and priority for task %d: ", i + 1);
+scanf("%d %d", &data, &priority);
+enqueue(pq, data, priority);
+}
+printf("\nPriority Queue:\n");
+display(pq);
+printf("\nDequeue operations:\n");
+while (!isEmpty(pq)) {
+printf("Dequeued: %d\n", dequeue(pq));
+}
+return 0;
+}

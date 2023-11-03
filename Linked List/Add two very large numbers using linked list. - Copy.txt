@@ -1,0 +1,44 @@
+
+struct node {
+int data;
+struct node *next;
+};
+
+struct node* add(struct node* p1, struct node* p2, struct node* result) {
+struct node* temp = result;
+int carry = 0;
+while (p1 != NULL && p2 != NULL) {
+int sum = p1->data + p2->data + carry;
+carry = sum / 10;
+temp->data = sum % 10;
+temp = temp->next;
+p1 = p1->next;
+p2 = p2->next;
+}
+
+while (p1 != NULL) {
+int sum = p1->data + carry;
+carry = sum / 10;
+temp->data = sum % 10;
+temp =temp->next;
+p1 = p1->next;
+}
+
+while (p2 != NULL) {
+int sum = p2->data + carry;
+carry = sum / 10;
+
+temp->data = sum % 10;
+temp = temp->next;
+p2 = p2->next;
+}
+
+if (carry > 0) {
+temp->data = carry;
+temp
+->next = NULL;
+}
+
+return result;
+}
+

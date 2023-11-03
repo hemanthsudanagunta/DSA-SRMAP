@@ -1,0 +1,108 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+typedef struct Term {
+    int coefficient;
+    int exponent;
+    struct Term* next;
+} Term;
+
+typedef struct Node {
+    Term* data;
+    struct Node* next;
+} Node;
+
+void insertTerm(Node** head, int coefficient, int exponent) {
+    Term* newTerm = (Term*)malloc(sizeof(Term));
+    newTerm->coefficient = coefficient;
+    newTerm->exponent = exponent;
+    newTerm->next = NULL;
+
+    Node* newNode = (Node*)malloc(sizeof(Node));
+    newNode->data = newTerm;
+    newNode->next = NULL;
+
+    if (*head == NULL) {
+        *head = newNode;
+    } else {
+        Node* current = *head;
+        while (current->next != NULL) {
+            current = current->next;
+        }
+        current->next = newNode;
+    }
+}
+
+Node* multiplyPolynomials(Node* poly1, Node* poly2) {
+    Node* result = NULL;
+    Node* temp = poly1;
+
+    while (temp != NULL) {
+        Node* current = poly2;
+        while (current != NULL) {
+            int new_coefficient = temp->data->coefficient * current->data->coefficient;
+            int new_exponent = temp->data->exponent + current->data->exponent;
+
+            insertTerm(&result, new_coefficient, new_exponent);
+            current = current->next;
+        }
+        temp = temp->next;
+    }
+
+    return result;
+}
+
+void displayPolynomial(Node* poly) {
+    if (poly == NULL) {
+        printf("0\n");
+        return;
+    }
+
+    while (poly != NULL) {
+        Term* term = poly->data;
+        printf("%dx^%d ", term->coefficient, term->exponent);
+        poly = poly->next;
+        if (poly != NULL) {
+            printf("+ ");
+        }
+    }
+    printf("\n");
+}
+
+int main() {
+    Node* poly1 = NULL;
+    Node* poly2 = NULL;
+
+    int numTerms1, numTerms2, coefficient, exponent;
+
+    printf("Enter the number of terms in Polynomial 1: ");
+    scanf("%d", &numTerms1);
+
+    for (int i = 0; i < numTerms1; i++) {
+        printf("Enter coefficient and exponent for term %d: ", i + 1);
+        scanf("%d %d", &coefficient, &exponent);
+        insertTerm(&poly1, coefficient, exponent);
+    }
+
+    printf("Enter the number of terms in Polynomial 2: ");
+    scanf("%d", &numTerms2);
+
+    for (int i = 0; i < numTerms2; i++) {
+        printf("Enter coefficient and exponent for term %d: ", i + 1);
+        scanf("%d %d", &coefficient, &exponent);
+        insertTerm(&poly2, coefficient, exponent);
+    }
+
+    printf("Polynomial 1: ");
+    displayPolynomial(poly1);
+
+    printf("Polynomial 2: ");
+    displayPolynomial(poly2);
+
+    Node* result = multiplyPolynomials(poly1, poly2);
+
+    printf("Result: ");
+    displayPolynomial(result);
+
+    return 0;
+}

@@ -1,0 +1,97 @@
+Q) Implement the MergeSort algorithm to sort the sequence of
+integers stored in Linkedlist.
+
+A)
+#include <stdio.h>
+#include <stdlib.h>
+struct Node {
+int data;
+struct Node* next;
+};
+struct Node* merge(struct Node* a, struct Node* b) {
+struct Node* result = NULL;
+if (a == NULL)
+return b;
+if (b == NULL)
+return a;
+if (a->data <= b->data) {
+result = a;
+result->next = merge(a->next, b);
+} else {
+result = b;
+result->next = merge(a, b->next);
+}
+return result;
+}
+void splitList(struct Node* source, struct Node** frontRef, struct Node** backRef) {
+
+struct Node* fast;
+struct Node* slow;
+slow = source;
+fast = source->next;
+while (fast != NULL) {
+fast = fast->next;
+if (fast != NULL) {
+slow = slow->next;
+fast = fast->next;
+}
+}
+*frontRef = source;
+*backRef = slow->next;
+slow->next = NULL;
+}
+void mergeSort(struct Node** headRef) {
+struct Node* head = *headRef;
+struct Node* a;
+struct Node* b;
+if ((head == NULL) || (head->next == NULL)) {
+return;
+}
+splitList(head, &a, &b);
+mergeSort(&a);
+mergeSort(&b);
+*headRef = merge(a, b);
+}
+void insertNode(struct Node** headRef, int newData) {
+struct Node* newNode = (struct Node*)malloc(sizeof(struct Node));
+newNode->data = newData;
+newNode->next = NULL;
+if (*headRef == NULL) {
+*headRef = newNode;
+return;
+}
+struct Node* current = *headRef;
+while (current->next != NULL) {
+current = current->next;
+}
+
+current->next = newNode;
+}
+void printList(struct Node* node) {
+while (node != NULL) {
+printf("%d ", node->data);
+node = node->next;
+}
+printf("\n");
+}
+int main() {
+struct Node* head = NULL;
+int data;
+int n;
+printf("Enter the number of elements: ");
+scanf("%d", &n);
+printf("Enter the elements: ");
+for (int i = 0; i < n; i++) {
+scanf("%d", &data);
+insertNode(&head, data);
+}
+mergeSort(&head);
+printf("Sorted List: ");
+printList(head);
+while (head != NULL) {
+struct Node* temp = head;
+head = head->next;
+free(temp);
+}
+return 0;
+}
