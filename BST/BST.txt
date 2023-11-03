@@ -1,0 +1,128 @@
+Q)
+
+Implement the BST with the following individual functions.
+1. Create new node
+2. Insert a new node to the BST
+3. Pre-order, In-order, and Post-order traversal
+4. Search an element from BST
+5. Find the smallest and largest element from BST
+6. Find the height of the BST
+
+A)
+
+#include <stdio.h>
+#include <stdlib.h>
+struct node {
+int key;
+struct node *left;
+struct node *right;
+};
+struct node* newnode(int item) {
+struct node temp = (struct node)malloc(sizeof(struct node));
+temp->key = item;
+temp->left = temp->right = NULL;
+return temp;
+}
+struct node* insert(struct node *root, int k) {
+if (root == NULL)
+return newnode(k);
+if (k < root->key)
+root->left = insert(root->left, k);
+else if (k > root->key)
+root->right = insert(root->right, k);
+
+return root;
+}
+void inorder(struct node *root) {
+if (root != NULL) {
+inorder(root->left);
+printf("%d ", root->key);
+inorder(root->right);
+}
+}
+void preorder(struct node *root) {
+if (root != NULL) {
+printf("%d ", root->key);
+preorder(root->left);
+preorder(root->right);
+}
+}
+void postorder(struct node *root) {
+if (root != NULL) {
+postorder(root->left);
+postorder(root->right);
+printf("%d ", root->key);
+}
+}
+struct node* search(struct node *root, int k) {
+if (root == NULL || root->key == k)
+return root;
+if (k < root->key)
+return search(root->left, k);
+else
+return search(root->right, k);
+}
+int findSmallest(struct node *root) {
+if (root == NULL) {
+return 0;
+}
+while (root->left != NULL) {
+root = root->left;
+}
+return root->key;
+
+}
+int findLargest(struct node *root) {
+if (root == NULL) {
+return 0;
+}
+while (root->right != NULL) {
+root = root->right;
+}
+return root->key;
+}
+int findHeight(struct node *root) {
+if (root == NULL) {
+return 0;
+}
+int leftHeight = findHeight(root->left);
+int rightHeight = findHeight(root->right);
+if(leftHeight>rightHeight)
+return(leftHeight +1);
+else
+return (rightHeight +1);
+}
+int main() {
+struct node* root = NULL;
+// Add your custom input here
+root = insert(root, 90);
+root = insert(root, 80);
+root = insert(root, 70);
+root = insert(root, 60);
+root = insert(root, 50);
+root = insert(root, 40);
+root = insert(root, 30);
+root = insert(root, 25);
+root = insert(root, 10);
+root = insert(root, 7);
+printf("In-order traversal: ");
+inorder(root);
+printf("\n");
+printf("Pre-order traversal: ");
+
+preorder(root);
+printf("\n");
+printf("Post-order traversal: ");
+postorder(root);
+printf("\n");
+int elementToSearch = 40;
+struct node* foundNode = search(root, elementToSearch);
+if (foundNode != NULL)
+printf("Element %d found in the BST.\n", elementToSearch);
+else
+printf("Element %d not found in the BST.\n", elementToSearch);
+printf("Smallest element: %d\n", findSmallest(root));
+printf("Largest element: %d\n", findLargest(root));
+printf("Height of the BST: %d\n", findHeight(root));
+return 0;
+}
