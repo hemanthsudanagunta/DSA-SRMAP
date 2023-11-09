@@ -1,0 +1,81 @@
+1.infix to postfix
+
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+#define MAX 100
+
+char stack[MAX];
+char infix[MAX], postfix[MAX];
+int top = -1;
+
+void inToPost() {
+    int i, j = 0;
+    char symbol;
+
+    for (i = 0; i < strlen(infix); i++) {
+        symbol = infix[i];
+
+        switch (symbol) {
+        case '(':
+            stack[++top] = symbol;
+            break;
+        case ')':
+            while (stack[top] != '(') {
+                postfix[j++] = stack[top--];
+            }
+            top--;
+            break;
+        case '+':
+        case '-':
+        case '*':
+        case '/':
+        case '%':
+            while (top >= 0 && precedence(stack[top]) > precedence(symbol)) {
+                postfix[j++] = stack[top--];
+            }
+            stack[++top] = symbol;
+            break;
+        default:
+            postfix[j++] = symbol;
+            break;
+        }
+    }
+
+    while (top >= 0) {
+        postfix[j++] = stack[top--];
+    }
+
+    postfix[j] = '\0';
+}
+
+int precedence(char symbol) {
+    switch (symbol) {
+    case '(':
+        return 0;
+    case '+':
+    case '-':
+        return 1;
+    case '*':
+    case '/':
+    case '%':
+        return 2;
+    default:
+        return -1;  // Handle unrecognized symbols
+    }
+}
+
+int main() {
+    printf("Enter the infix expression: ");
+    fgets(infix, sizeof(infix), stdin);
+
+    // Remove the newline character from the input
+    infix[strcspn(infix, "\n")] = '\0';
+
+    inToPost();
+    printf("The postfix expression is: %s\n", postfix);
+
+    return 0;
+}
